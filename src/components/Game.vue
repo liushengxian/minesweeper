@@ -18,10 +18,8 @@
 
     <div class="score-input" v-if="win">
       <div class="input-box">
-        <div>
-          请问尊姓大名：
-        </div>
-        <input  v-model="playerName"/>
+        <div>请问尊姓大名：</div>
+        <input v-model="playerName" />
         <div>成绩：{{timeSpend}}</div>
         <button @click="postScore()">确定</button>
       </div>
@@ -30,7 +28,7 @@
 </template>
 
 <script>
-import axios from "axios"
+import axios from "axios";
 const MAP_SIZE = 16;
 const MINE_COUNT = 40;
 
@@ -43,7 +41,7 @@ export default {
       timer: 0,
       gameOver: false,
       win: false,
-      playerName: ''
+      playerName: ""
     };
   },
   mounted() {
@@ -51,41 +49,51 @@ export default {
     this.restart();
   },
   methods: {
-    restart() {
+    drawMap(x, y) {
       let mine_count_left = MINE_COUNT;
-      let blank_count_left = MAP_SIZE * MAP_SIZE - MINE_COUNT;
+      let blank_count_left = MAP_SIZE * MAP_SIZE - MINE_COUNT - 1;
 
-      let mapData = [];
       for (let ix = 0; ix < MAP_SIZE; ix++) {
-        let tempArr = [];
         for (let iy = 0; iy < MAP_SIZE; iy++) {
-          if (
+          if (x == ix && y == iy) {
+            this.mapData[ix][iy] = "S";
+          } else if (
             (Math.random() < 0.16 && mine_count_left > 0) ||
             blank_count_left == 0
           ) {
-            tempArr.push("M");
+            this.mapData[ix][iy] = "M";
             mine_count_left--;
           } else {
-            tempArr.push("S");
+            this.mapData[ix][iy] = "S";
             blank_count_left--;
           }
         }
-        mapData.push(tempArr);
       }
-
-      let mapRevealed = [];
-      for (let i = 0; i < MAP_SIZE; i++) {
-        mapRevealed.push(new Array(MAP_SIZE).fill("F"));
-      }
-
-      this.mapData = mapData;
-      this.mapRevealed = mapRevealed;
 
       for (let ix = 0; ix < MAP_SIZE; ix++) {
         for (let iy = 0; iy < MAP_SIZE; iy++) {
           this.fillNumber(ix, iy, this.mapData[ix][iy]);
         }
       }
+    },
+    restart() {
+      // 覆盖地图
+      let mapRevealed = [];
+      for (let i = 0; i < MAP_SIZE; i++) {
+        mapRevealed.push(new Array(MAP_SIZE).fill("F"));
+      }
+
+      let mapData = [];
+      for (let ix = 0; ix < MAP_SIZE; ix++) {
+        let tempArr = [];
+        for (let iy = 0; iy < MAP_SIZE; iy++) {
+          tempArr.push("");
+        }
+        mapData.push(tempArr);
+      }
+
+      this.mapData = mapData;
+      this.mapRevealed = mapRevealed;
 
       this.gameOver = false;
       this.win = false;
@@ -145,6 +153,8 @@ export default {
         this.timer = setInterval(() => {
           this.timeSpend++;
         }, 1000);
+
+        this.drawMap(x, y);
       }
 
       // 监听数组变化的方法
@@ -192,13 +202,15 @@ export default {
         });
       });
     },
-    postScore(){
-      axios.post("http://mooncake.migame.xyz:8004/score",{
-        name: this.playerName,
-        score: this.timeSpend
-      }).then(() =>{
-        this.restart();
-      });
+    postScore() {
+      axios
+        .post("http://mooncake.migame.xyz:8004/score", {
+          name: this.playerName,
+          score: this.timeSpend
+        })
+        .then(() => {
+          this.restart();
+        });
     }
   }
 };
@@ -284,8 +296,8 @@ export default {
   top: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(1,1,1,0.8);
-  .input-box{
+  background: rgba(1, 1, 1, 0.8);
+  .input-box {
     position: absolute;
     width: 500px;
     height: 200px;
@@ -294,7 +306,6 @@ export default {
     top: 50%;
     margin-left: -250px;
     margin-top: -100px;
-
   }
 }
 </style>
