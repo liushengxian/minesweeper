@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <h1>MineSweeper Misan</h1>
+    <div class="music-block" :class="musicPlaying?'play':''" @click="toggleMusic()">
+    </div>
     <ul>
       <li v-for="(v,i) in rankList" :key="i" class="piece" v-show="i<3">
         <div>排名：{{i+1}}</div>
@@ -9,6 +11,7 @@
       </li>
     </ul>
     <Game></Game>
+    <audio ref="music" src="https://misanya-1252867445.cos.ap-shanghai.myqcloud.com/%CE%BC's%20-%20%E3%82%BF%E3%82%AB%E3%83%A9%E3%83%A2%E3%83%8E%E3%82%BA.mp3" loop autoplay></audio>
   </div>
 </template>
 
@@ -23,7 +26,8 @@ export default {
   },
   data(){
     return {
-      rankList:[]
+      rankList:[],
+      musicPlaying: true,
     }
   },
   mounted(){
@@ -39,7 +43,23 @@ export default {
       })
 
     })
+
+    setTimeout(()=>{
+      this.$refs.music.play();
+    },1000)
+  },
+  methods:{
+    toggleMusic(){
+      if(this.$refs.music.paused){
+        this.$refs.music.play();
+        this.musicPlaying = true;
+      }else{
+        this.$refs.music.pause();
+        this.musicPlaying = false;
+      }
+    }
   }
+
 }
 </script>
 
@@ -59,5 +79,22 @@ body{
 .piece div{
   display: inline-block;
   margin-right: 15px;
+}
+
+@keyframes circle{
+0%{ transform:rotate(0deg); }
+100%{ transform:rotate(360deg); }
+}
+
+.music-block{
+  background: url('./assets/music.png');
+  background-size: 100% 100%;
+  width: 40px;
+  height: 40px;
+  margin: auto;
+}
+
+.play{
+  animation: circle linear 3s infinite;
 }
 </style>
