@@ -1,17 +1,26 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>MineSweeper Misan</h1>
+    <ul>
+      <li v-for="i in rankList" :key="i">rank</li>
+    </ul>
+    <div>Play New Game</div>
+    <Game></Game>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Game from './components/Game.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Game
+  },
+  data(){
+    return {
+      rankList:[1,2,3]
+    }
   }
 }
 </script>
@@ -24,5 +33,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+body{
+  background: #555;
 }
 </style>
