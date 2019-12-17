@@ -98,6 +98,12 @@ export default {
       this.gameOver = false;
       this.win = false;
       this.timeSpend = 0;
+
+      if (this.timer) {
+        clearInterval(this.timer);
+        this.timer = 0;
+      }
+      // this.timer = 0;
     },
     getNearby(x, y) {
       let tmp = [
