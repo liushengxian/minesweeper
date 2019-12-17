@@ -1,10 +1,8 @@
 <template>
   <div>
     <div class="task">
-      <div class="smile" :class="{'game-over': gameOver}" @click="restart()"></div>
-      <div class="time-spend">
-        {{timeSpend}}
-      </div>
+      <div class="smile" :class="{'game-over': gameOver, 'win': win}" @click="restart()"></div>
+      <div class="time-spend">{{timeSpend}}</div>
     </div>
     <div class="game">
       <div v-for="(s,i) in mapData" :key="i">
@@ -31,7 +29,8 @@ export default {
       mapRevealed: [],
       timeSpend: 0,
       timer: 0,
-      gameOver: false
+      gameOver: false,
+      win: false
     };
   },
   mounted() {
@@ -76,6 +75,7 @@ export default {
       }
 
       this.gameOver = false;
+      this.win = false;
       this.timeSpend = 0;
     },
     getNearby(x, y) {
@@ -165,7 +165,7 @@ export default {
       });
 
       if (leftCount <= MINE_COUNT) {
-        window.console.log("you win!");
+        this.win = true;
         // 停止倒计时 结算成绩
         clearInterval(this.timer);
         this.timer = 0;
@@ -213,6 +213,9 @@ export default {
 }
 .game-over {
   background-image: url("../assets/over.png");
+}
+.win {
+  background-image: url("../assets/win.png");
 }
 .game {
   margin: auto;
