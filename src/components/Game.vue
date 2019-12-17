@@ -164,7 +164,7 @@ export default {
         return val === "F";
       });
 
-      if (leftCount <= MINE_COUNT) {
+      if (leftCount.length <= MINE_COUNT) {
         this.win = true;
         // 停止倒计时 结算成绩
         clearInterval(this.timer);
