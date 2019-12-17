@@ -15,10 +15,22 @@
         ></div>
       </div>
     </div>
+
+    <div class="score-input" v-if="win">
+      <div class="input-box">
+        <div>
+          请问尊姓大名：
+        </div>
+        <input  v-model="playerName"/>
+        <div>成绩：{{timeSpend}}</div>
+        <button @click="postScore()">确定</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from "axios"
 const MAP_SIZE = 16;
 const MINE_COUNT = 40;
 
@@ -30,7 +42,8 @@ export default {
       timeSpend: 0,
       timer: 0,
       gameOver: false,
-      win: false
+      win: false,
+      playerName: ''
     };
   },
   mounted() {
@@ -154,7 +167,6 @@ export default {
       } else {
         // do nothing, just show the number
       }
-      window.console.log(val);
 
       // 判断游戏是否结束
       let all = this.mapRevealed.reduce((pre, val) => {
@@ -171,9 +183,6 @@ export default {
         this.timer = 0;
       }
     },
-    clearBorder(pos) {
-      window.console.log(pos);
-    },
     revealMine() {
       this.mapData.forEach((arr, x) => {
         arr.forEach((val, y) => {
@@ -181,6 +190,14 @@ export default {
             this.mapRevealed[x][y] = "M";
           }
         });
+      });
+    },
+    postScore(){
+      axios.post("http://mooncake.migame.xyz:8004/score",{
+        name: this.playerName,
+        score: this.timeSpend
+      }).then(() =>{
+        this.restart();
       });
     }
   }
@@ -258,6 +275,26 @@ export default {
       background-repeat: no-repeat;
       background-size: 100% 100%;
     }
+  }
+}
+
+.score-input {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(1,1,1,0.8);
+  .input-box{
+    position: absolute;
+    width: 500px;
+    height: 200px;
+    background: #eee;
+    left: 50%;
+    top: 50%;
+    margin-left: -250px;
+    margin-top: -100px;
+
   }
 }
 </style>
